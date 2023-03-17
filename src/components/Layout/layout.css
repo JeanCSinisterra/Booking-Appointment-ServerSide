@@ -1,0 +1,116 @@
+.main {
+    padding: 20px;
+    height: 100vh;
+}
+
+.sidebar {
+    background-color: #10b881 ;
+    border-radius: 8px;
+    box-shadow: 0 0 2px gray;
+    margin-right: 20px;
+    min-height: 100%;
+    padding: 10px;
+}
+
+.collapsed-sidebar{
+    background-color: #10b881;
+    border-radius: 8px;
+    box-shadow: 0 0 2px gray;
+    margin-right: 20px;
+    min-height: 100%;
+    padding: 10px;
+}
+
+.anchor {
+    color: black !important;
+    text-decoration: underline;
+    font-size: 16px !important;
+}
+
+.header {
+    background-color: #F5F5F5;
+    border-radius: 8px;
+    box-shadow: 0 0 2px gray;
+    margin-bottom: 20px;
+    height: 10vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.content {
+    width: 100%;
+    height: 100%; 
+}
+
+.body {
+    background-color: #F5F5F5;
+    border-radius: 8px;
+    box-shadow: 0 0 2px gray;
+    height: 82vh;
+    width: 100%;
+    padding: 15px;
+}
+
+.header-action-icon{
+    font-size: 30px;
+    color: black;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.ant-badge-count {
+    padding-right: -10px !important;
+    padding-bottom: -10px;
+}
+
+/* Text styling */
+.title-sidebar {
+    color: #F5F5F5;
+    margin-left: 10px;
+}
+
+.roleKeyword {
+    color: #F5F5F5;
+    font-size: 14px;
+    margin-top: -10px;
+    margin-left: 10px;
+}
+
+.menu {
+    margin-top: 50px;
+    padding: 0 12px;
+}
+
+.menu-item {
+    margin-top: 20px;
+    margin-left: 10px;
+}
+
+.menu-item a{
+    text-decoration: none;
+    color: #F5F5F5;
+    font-size: 18px;
+    padding: 0 10px;
+}
+
+.menu-item i{
+    text-decoration: none;
+    color: #F5F5F5;
+    font-size: 18px;
+    margin: 0 15px;
+}
+
+.active-menu-item{
+    color: #F5F5F5;
+    background-color: #0d986a;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+@media screen and (max-width: 768px){
+    .menu{
+        padding: 0 5px;
+    }
+}

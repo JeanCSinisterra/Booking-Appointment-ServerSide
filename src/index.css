@@ -1,0 +1,157 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,700;1,400;1,500&display=swap');
+
+* {
+    margin: 0;
+    font-family: "Montserrat", sans-serif;
+}
+
+/* antd override */
+input {
+    height: 40px;
+    border: 1px solid rgba(128, 128, 128, 0.479) !important;
+}
+
+input:focus , .ant-picker {
+    outline: none !important;
+    box-shadow: none !important;
+    border: 1px solid rgba(128, 128, 128, 0.479) !important;
+    height: 40px;
+}
+
+label {
+    font-size: 16px !important;
+    color: black;
+}
+ 
+.ant-form-item {
+    margin: 5px 0 !important;
+}
+
+.ant-scroll-number-only-unit{
+    padding-right: -10px;
+    padding-bottom: -10px;
+}
+
+/* Common Styling */
+
+.spinner-parent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    background-color: rgba(155, 153, 153, 0.846);
+}
+
+.spinner-border{
+    width: 4rem;
+    height: 4rem;
+    color: #F5F5F5 !important;
+}
+
+
+.card-title {
+    font-size: 22px ;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.627);
+}
+
+.normal-text {
+    font-size: 1rem;
+}
+
+.card {
+    box-shadow: 0 0 2px rgb(161, 161, 161);
+    border-radius: 0 !important;
+    cursor: pointer;
+}
+
+p {
+    color: rgba(0, 0, 0, 0.627) !important;
+    padding: 2px !important;
+    margin: 1px !important;
+}
+
+.ant-picker-input input {
+    border: none !important;
+}
+
+
+.primary-button {
+    background-color: #10b881 !important;
+    border-color: #10b881 !important;
+    height: 40px !important;
+    width: max-content !important;
+    color: #050709 !important;
+    font-size: 18px;
+}
+
+.secondary-button{
+    background-color: #F5F5F5 !important;
+    border-color: #fac800 !important;
+    border-width: 2px !important;
+    height: 40px !important;
+    width: max-content !important;
+    color: #010101 !important;
+    font-size: 18px;
+}
+
+.secondary-button:hover{
+    background-color: #fac800 !important;
+    border-color: #fac800 !important;
+    height: 40px !important;
+    width: max-content !important;
+    color: #010101 !important;
+    font-size: 18px;
+}
+
+.full-width-button {
+    width: 100% !important;
+}
+
+.full-width-button:hover {
+    width: 100% !important;
+}
+
+.anchor {
+    color: black !important;
+    text-decoration: underline;
+    font-size: 16px !important;
+    cursor: pointer;
+}
+
+
+/* authentication pages */
+
+.cursor-pointer{
+    cursor: pointer;
+}
+
+.authentication {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #F5F5F5;
+}
+
+.authentication-form {
+    width: 400px;
+} 
+
+.authentication .card-title{
+    font-size: 1.5rem;
+    font-weight: bold;
+    background-color: #6367f1;
+    color: whitesmoke !important;
+    max-width: max-content !important;
+    padding: 7px 15px;
+    margin-left: -40px;
+    border-bottom-left-radius: 10px;
+}
+
+/* #0E1616 */
