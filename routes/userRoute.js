@@ -243,7 +243,7 @@ router.post("/book-appointment", authMiddleware, async (req, res) => {
 // Route to check availability of the appointments
 router.post("/check-booking-availability", authMiddleware, async (req, res) => {
     try {
-        const date = moment(req.body.date, "DD-MM-YYYY").toISOString();
+      const date = moment(req.body.date, "DD-MM-YYYY").toISOString();
       const fromTime = moment.utc(req.body.time, "h:mm A").subtract(1, "hours").toISOString();
       const toTime = moment.utc(req.body.time, "h:mm A").add(1, "hours").toISOString();
         const doctorId = req.body.doctorId;
