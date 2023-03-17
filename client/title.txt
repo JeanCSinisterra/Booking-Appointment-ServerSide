@@ -1,1 +1,0 @@
-#This is the folder to hold all the Client-side files
