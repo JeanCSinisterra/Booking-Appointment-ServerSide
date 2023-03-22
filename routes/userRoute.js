@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const authMiddleware = require("../middleware/authMiddleware");
 const Appointment = require("../models/appointmentModel");
+const dayjs = require('dayjs')
 
 // Register Route
 router.post("/register", async (req, res) => {
@@ -88,9 +89,6 @@ router.post("/get-user-info-by-id", authMiddleware, async (req, res) => {
 router.post("/apply-doctor-account", authMiddleware, async (req, res) => {
   try {
     // Check if the time value is correctly received in the server-side code.
-    const { fromTime, toTime } = req.body;
-    console.log("fromTime", fromTime);
-    console.log("toTime", toTime);
     const newdoctor = new Doctor({ ...req.body, status: "pending" });
     await newdoctor.save();
     const adminUser = await User.findOne( { isAdmin: true });
@@ -202,8 +200,8 @@ router.get("/get-all-approved-doctors", authMiddleware, async (req, res) => {
 router.post("/book-appointment", authMiddleware, async (req, res) => {
   try {
     // Convert date and time values to UTC moment objects
-    const date = moment.utc(req.body.date, "DD-MM-YYYY");
-    const time = moment.utc(req.body.time, "h:mm A");
+    const date = dayjs(req.body.date).format("DD-MM-YYYY");
+    const time = dayjs(req.body.time).format("HH:mm");
 
     // Store date and time values as separate fields
     req.body.status = "pending";
@@ -242,9 +240,9 @@ router.post("/book-appointment", authMiddleware, async (req, res) => {
 // Route to check availability of the appointments
 router.post("/check-booking-availability", authMiddleware, async (req, res) => {
     try {
-      const date = moment(req.body.date, "DD-MM-YYYY").toISOString();
-      const fromTime = moment.utc(req.body.time, "h:mm A").subtract(1, "hours").toISOString();
-      const toTime = moment.utc(req.body.time, "h:mm A").add(1, "hours").toISOString();
+      const date = dayjs(req.body.date).format("DD-MM-YYYY").toString();
+      const fromTime = dayjs(req.body.time).format("HH:mm").subtract(1, "hours").toString();
+      const toTime = dayjs(req.body.time).format("HH:mm").add(1, "hours").toString();
         const doctorId = req.body.doctorId;
         const appointments = await Appointment.find({
             doctorId,
