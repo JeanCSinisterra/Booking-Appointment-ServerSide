@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const authMiddleware = require("../middleware/authMiddleware");
 const Appointment = require("../models/appointmentModel");
-const dayjs = require('dayjs')
+const dayjs = require('dayjs');
 
 // Register Route
 router.post("/register", async (req, res) => {
@@ -205,9 +205,8 @@ router.post("/book-appointment", authMiddleware, async (req, res) => {
 
     // Store date and time values as separate fields
     req.body.status = "pending";
-    req.body.date = date.toDate();
-    req.body.time = time.toDate();
-
+    req.body.date = date;
+    req.body.time = time;
     
     // Create a new appointment and save it to the database
     const newAppointment = new Appointment(req.body);
@@ -239,39 +238,51 @@ router.post("/book-appointment", authMiddleware, async (req, res) => {
 
 // Route to check availability of the appointments
 router.post("/check-booking-availability", authMiddleware, async (req, res) => {
-    try {
-      const date = dayjs(req.body.date).format("DD-MM-YYYY").toString();
-      const fromTime = dayjs(req.body.time).format("HH:mm").subtract(1, "hours").toString();
-      const toTime = dayjs(req.body.time).format("HH:mm").add(1, "hours").toString();
-        const doctorId = req.body.doctorId;
-        const appointments = await Appointment.find({
-            doctorId,
-            date,
-            time: {$gte: fromTime, $lte: toTime },
-        })
-        if (appointments.length > 0 ) {
-            return res.status(200).send({
-                message: "Appointment is not available, please select a new time slot",
-                success: false
-            });
-        } else {
-            res.status(200).send({
-            message: "Appointment booked successfully",
-            success: true,
-            })
-        }
-        
-    } catch (error) {
-        console.log(error);
-        res
-            .status(500)
-            .send({
-                message: "Error trying to book your appointment",
-                success: false,
-                error,
-            });
+  try {
+    const date = dayjs(req.body.date).format("DD-MM-YYYY").toString();
+    const time = req.body.time;
+    const doctorId = req.body.doctorId;
+
+    const doctor = await Doctor.findOne({ _id: doctorId });
+    if (!doctor) {
+      return res.status(404).send({
+        message: "Doctor not found",
+        success: false,
+      });
     }
+
+    const fromTime = doctor.fromTime;
+    const toTime = doctor.toTime;
+
+    const appointments = await Appointment.find({
+      doctorId,
+      date,
+      time: { $gte: fromTime, $lte: toTime },
+    });
+
+    if (appointments.length > 0) {
+      return res.status(200).send({
+        message: "Appointment is not available, please select a new time slot",
+        success: false,
+      });
+    } else {
+      res.status(200).send({
+        message: "Appointment is available",
+        success: true,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res
+      .status(500)
+      .send({
+        message: "Error trying to check appointment availability",
+        success: false,
+        error,
+      });
+  }
 });
+
 
 // Route to get all the Appointments by user id
 router.get("/get-appointments-by-user-id", authMiddleware, async (req, res) => {

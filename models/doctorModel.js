@@ -35,11 +35,11 @@ const doctorSchema = new mongoose.Schema(
             required: true,
         },
         fromTime: {
-            type: Date,
+            type: String,
             required: true,
         },
         toTime: { 
-            type: Date,
+            type: String,
             required: true,
         },
         status: {
