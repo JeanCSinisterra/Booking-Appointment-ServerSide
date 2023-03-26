@@ -60,13 +60,13 @@ router.post("/get-doctor-info-by-id", authMiddleware, async (req, res) => {
 // Route to render the layout of the Appointments
 router.get("/get-appointments-by-doctor-id", authMiddleware, async (req, res) => {
     try {
-        const doctor = await Doctor.findOne({ userId: req.body.user?._id });
-        const appointments = await Appointment.findOne({ doctorId: doctor?._id})
+        const doctor = await Doctor.findOne({ userId: req.body.userId });
+        const appointments = await Appointment.find({ doctorId: doctor._id})
         res.status(200)
             .send({
                 success: true,
                 message: "Appointments fetched successfully",
-                data: appointments
+                data: appointments,
             });
     } catch (error) {
         console.log(error);

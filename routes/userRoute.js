@@ -284,7 +284,8 @@ router.post("/check-booking-availability", authMiddleware, async (req, res) => {
 // Route to get all the Appointments by user id
 router.get("/get-appointments-by-user-id", authMiddleware, async (req, res) => {
     try {
-        const appointments = await Appointment.find({userId: req.body.userId});
+      const user = await User.findOne({ _id: req.body.userId });
+      const appointments = await Appointment.find({ userId: user._id});
         res.status(200).send({
             message: "Appointments fetched successfully",
             success: true,
