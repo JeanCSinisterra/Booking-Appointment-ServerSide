@@ -236,11 +236,12 @@ router.post("/book-appointment", authMiddleware, async (req, res) => {
   }
 });
 
-// Route to check availability of the appointments
+// Route to check if appointment is available for selected doctor and time.
 router.post("/check-booking-availability", authMiddleware, async (req, res) => {
   try {
     const date = dayjs(req.body.date).format("DD-MM-YYYY").toString();
-    const time = req.body.time;
+    const fromTime = dayjs(req.body.time, "HH:mm").subtract(1, "hours").toString();
+    const toTime = dayjs(req.body.time, "HH:mm").add(1, "hours").toString();
     const doctorId = req.body.doctorId;
 
     const doctor = await Doctor.findOne({ _id: doctorId });
@@ -251,13 +252,10 @@ router.post("/check-booking-availability", authMiddleware, async (req, res) => {
       });
     }
 
-    const fromTime = doctor.fromTime;
-    const toTime = doctor.toTime;
-
     const appointments = await Appointment.find({
       doctorId,
       date,
-      time: { $gte: fromTime, $lte: toTime },
+      time: { $gte: fromTime, $lte: toTime }
     });
 
     if (appointments.length > 0) {
@@ -283,7 +281,6 @@ router.post("/check-booking-availability", authMiddleware, async (req, res) => {
   }
 });
 
-
 // Route to get all the Appointments by user id
 router.get("/get-appointments-by-user-id", authMiddleware, async (req, res) => {
     try {
@@ -298,7 +295,7 @@ router.get("/get-appointments-by-user-id", authMiddleware, async (req, res) => {
         res
             .status(500)
             .send({
-                message: "Error getting appointments",
+                message: "Error fetching appointments",
                 success: false,
                 error,
             });

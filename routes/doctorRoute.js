@@ -7,7 +7,7 @@ const Appointment = require("../models/appointmentModel");
 // Route to render the layout of a Doctor Profile with the original information
 router.post("/get-doctor-info-by-user-id", authMiddleware,  async (req, res) => {
     try {
-        const doctor = await Doctor.findOne({ userId: req.body.userId });
+        const doctor = await Doctor.findOne({ userId: req.body.user._id });
         res.status(200)
             .send({ 
                 success: true, 
@@ -60,8 +60,8 @@ router.post("/get-doctor-info-by-id", authMiddleware, async (req, res) => {
 // Route to render the layout of the Appointments
 router.get("/get-appointments-by-doctor-id", authMiddleware, async (req, res) => {
     try {
-        const doctor = await Doctor.findOne({ userId: req.body.userId });
-        const appointments = await Appointment.findOne({ doctorId: doctor._id})
+        const doctor = await Doctor.findOne({ userId: req.user?._id });
+        const appointments = await Appointment.findOne({ doctorId: doctor?._id})
         res.status(200)
             .send({
                 success: true,
@@ -70,9 +70,7 @@ router.get("/get-appointments-by-doctor-id", authMiddleware, async (req, res) =>
             });
     } catch (error) {
         console.log(error);
-        res
-            .status(500)
-            .send({ message: "Error fetching Appointments", success: false, error });
+        res.status(500).send({ message: "Error fetching Appointments", success: false, error });
     }
 })
 
