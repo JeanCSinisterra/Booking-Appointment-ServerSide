@@ -60,7 +60,7 @@ router.post("/get-doctor-info-by-id", authMiddleware, async (req, res) => {
 // Route to render the layout of the Appointments
 router.get("/get-appointments-by-doctor-id", authMiddleware, async (req, res) => {
     try {
-        const doctor = await Doctor.findOne({ userId: req.user?._id });
+        const doctor = await Doctor.findOne({ userId: req.body.user?._id });
         const appointments = await Appointment.findOne({ doctorId: doctor?._id})
         res.status(200)
             .send({
