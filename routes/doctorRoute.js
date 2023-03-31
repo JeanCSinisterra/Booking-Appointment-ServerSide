@@ -23,7 +23,7 @@ router.post("/get-doctor-info-by-user-id", authMiddleware,  async (req, res) => 
     }
 })
 
-// Route to get updates in the Doctor Profile
+// Route to get updates in the information of Doctor Profile
 router.post("/update-doctor-profile", authMiddleware, async (req, res) => {
     try {
         const doctor = await Doctor.findOneAndUpdate({ userId: req.body.userId }, req.body);
