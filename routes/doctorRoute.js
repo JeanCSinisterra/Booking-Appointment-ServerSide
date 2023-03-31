@@ -44,7 +44,7 @@ router.post("/update-doctor-profile", authMiddleware, async (req, res) => {
 // Route to render the layout of a Doctor into the Homepage
 router.post("/get-doctor-info-by-id", authMiddleware, async (req, res) => {
     try {
-        const doctor = await Doctor.findOne({ userId: req.body.userId });    
+        const doctor = await Doctor.findOne({ _id: req.body.doctorId });    
         res.status(200)
             .send({
                 success: true,

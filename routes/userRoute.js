@@ -196,24 +196,6 @@ router.get("/get-all-approved-doctors", authMiddleware, async (req, res) => {
   }
 });
 
-// Route to render the layout of a Doctor into the Homepage
-router.post("/get-doctor-info-by-id", authMiddleware, async (req, res) => {
-  try {
-    const doctor = await Doctor.findOne({ userId: req.body.userId });
-    res.status(200)
-      .send({
-        success: true,
-        message: "Doctor info fetched successfully",
-        data: doctor
-      });
-  } catch (error) {
-    console.log(error);
-    res
-      .status(500)
-      .send({ message: "Error getting Doctor info", success: false, error });
-  }
-})
-
 // Route to Book the appointments
 router.post("/book-appointment", authMiddleware, async (req, res) => {
   try {
