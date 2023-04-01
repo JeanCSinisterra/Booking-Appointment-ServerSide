@@ -200,8 +200,9 @@ router.get("/get-all-approved-doctors", authMiddleware, async (req, res) => {
 router.post("/book-appointment", authMiddleware, async (req, res) => {
   try {
     // Convert date and time values to UTC moment objects
-    const date = dayjs(req.body.date).format("DD-MM-YYYY");
-    const time = dayjs(req.body.time).format("HH:mm");
+    const date = dayjs(req.body.date, "DD-MM-YYYY").format("DD-MM-YYYY").toString();
+    const time = dayjs(req.body.time, "HH:mm").toString();
+
 
     // Store date and time values as separate fields
     req.body.status = "pending";
