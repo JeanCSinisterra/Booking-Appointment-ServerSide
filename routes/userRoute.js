@@ -6,7 +6,7 @@ const Appointment = require("../models/appointmentModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const authMiddleware = require("../middleware/authMiddleware");
-const dayjs = require('dayjs');
+const dayjs = require("dayjs");
 
 // Register Route
 router.post("/register", async (req, res) => {
@@ -241,13 +241,10 @@ router.post("/book-appointment", authMiddleware, async (req, res) => {
 router.post("/check-booking-availability", authMiddleware, async (req, res) => {
   try {
     const date = dayjs(req.body.date).format("DD-MM-YYYY").toString();
-    const fromTime = dayjs.utc(`${req.body.date} ${req.body.time}`, "DD-MM-YYYY HH:mm").subtract(1, "hours").toISOString();
-    const toTime = dayjs.utc(`${req.body.date} ${req.body.time}`, "DD-MM-YYYY HH:mm").add(1, "hours").toISOString();
+    const fromTime = dayjs(`${req.body.date}T$${req.body.time}`, "DD-MM-YYYY HH:mm").subtract(1, "hours").toString();
+    const toTime = dayjs(`${req.body.date}T$${req.body.time}`, "DD-MM-YYYY HH:mm").add(1, "hours").toString();
     const doctorId = req.body.doctorId;
-
-    console.log("Received date and time:", req.body.date, req.body.time);
     console.log("Processed date, fromTime, and toTime:", date, fromTime, toTime);
-
 
     const doctor = await Doctor.findOne({ _id: doctorId });
     if (!doctor) {
@@ -259,7 +256,7 @@ router.post("/check-booking-availability", authMiddleware, async (req, res) => {
 
     const appointments = await Appointment.find({
       doctorId,
-      dateTime: { $gte: fromDateTime.toISOString(), $lte: toDateTime.toISOString() }
+      dateTime: { $gte: fromTime, $lte: toTime },
     });
 
     if (appointments.length > 0) {

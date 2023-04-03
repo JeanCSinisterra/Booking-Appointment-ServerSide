@@ -3,7 +3,6 @@
   "description": "This WebApp is an appointment booking system designed for a clinic. The application caters to three types of users: Administrator, Doctors & Patients. Administrators manage the overall system, including managing doctors and patient profiles, while doctors and patients can log in to schedule appointments. The system allows patients to select a doctor, choose a date and time for the appointment. Doctors can view their schedules and manage appointments, while administrators can view reports and statistics on appointment scheduling and user activity. The goal of the application is to streamline the appointment booking process and make it more efficient for both doctors and patients. ## Tech Stack",
   "version": "1.0.0",
   "main": "server.js",
-  "devDependencies": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JeanCSinisterra/Booking-Appointment-ServerSide.git"
