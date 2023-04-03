@@ -2,10 +2,10 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/userModel");
 const Doctor = require("../models/doctorModel");
+const Appointment = require("../models/appointmentModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const authMiddleware = require("../middleware/authMiddleware");
-const Appointment = require("../models/appointmentModel");
 const dayjs = require('dayjs');
 
 // Register Route
@@ -200,13 +200,14 @@ router.get("/get-all-approved-doctors", authMiddleware, async (req, res) => {
 router.post("/book-appointment", authMiddleware, async (req, res) => {
   try {
     // Convert date and time values to UTC moment objects
-    const date = dayjs(req.body.date, "DD-MM-YYYY").format("DD-MM-YYYY").toString();
-    const time = dayjs(req.body.time, "HH:mm").format("HH:mm").toString();
+    console.log("Received Date:", req.body.date, "Received Time:", req.body.time);
+    const date = dayjs(req.body.date, "DD-MM-YYYY");
+    const time = dayjs(req.body.time, "HH:mm");
+    const dateTime = date.hour(time.hour()).minute(time.minute());
 
     // Store date and time values as separate fields
     req.body.status = "pending";
-    req.body.date = date;
-    req.body.time = time;
+    req.body.dateTime = dateTime;
     
     // Create a new appointment and save it to the database
     const newAppointment = new Appointment(req.body);
@@ -240,9 +241,13 @@ router.post("/book-appointment", authMiddleware, async (req, res) => {
 router.post("/check-booking-availability", authMiddleware, async (req, res) => {
   try {
     const date = dayjs(req.body.date).format("DD-MM-YYYY").toString();
-    const fromTime = dayjs(req.body.time, "HH:mm").subtract(1, "hours").toString();
-    const toTime = dayjs(req.body.time, "HH:mm").add(1, "hours").toString();
+    const fromTime = dayjs.utc(`${req.body.date} ${req.body.time}`, "DD-MM-YYYY HH:mm").subtract(1, "hours").toISOString();
+    const toTime = dayjs.utc(`${req.body.date} ${req.body.time}`, "DD-MM-YYYY HH:mm").add(1, "hours").toISOString();
     const doctorId = req.body.doctorId;
+
+    console.log("Received date and time:", req.body.date, req.body.time);
+    console.log("Processed date, fromTime, and toTime:", date, fromTime, toTime);
+
 
     const doctor = await Doctor.findOne({ _id: doctorId });
     if (!doctor) {
@@ -254,8 +259,7 @@ router.post("/check-booking-availability", authMiddleware, async (req, res) => {
 
     const appointments = await Appointment.find({
       doctorId,
-      date,
-      time: { $gte: fromTime, $lte: toTime }
+      dateTime: { $gte: fromDateTime.toISOString(), $lte: toDateTime.toISOString() }
     });
 
     if (appointments.length > 0) {
@@ -280,6 +284,7 @@ router.post("/check-booking-availability", authMiddleware, async (req, res) => {
       });
   }
 });
+
 
 // Route to get all the Appointments by user id
 router.get("/get-appointments-by-user-id", authMiddleware, async (req, res) => {
