@@ -201,8 +201,8 @@ router.post("/book-appointment", authMiddleware, async (req, res) => {
   try {
     // Convert date and time values to UTC moment objects
     console.log("Received Date:", req.body.date, "Received Time:", req.body.time);
-    const date = dayjs(req.body.date, "DD-MM-YYYY");
-    const time = dayjs(req.body.time, "HH:mm");
+    const date = dayjs(req.body.date, "DD-MM-YYYY").toString()
+    const time = dayjs(req.body.time, "HH:mm").toString()
     const dateTime = date.hour(time.hour()).minute(time.minute());
 
     // Store date and time values as separate fields
