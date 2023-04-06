@@ -243,7 +243,6 @@ router.post("/check-booking-availability", authMiddleware, async (req, res) => {
     const date = dayjs(req.body.date, "DD-MM-YYYY");
     const time = dayjs(req.body.time, "HH:mm");
     const doctorId = req.body.doctorId;
-    console.log("Processed date and time:", date.format("DD-MM-YYYY"), time.format("HH:mm"));
 
     const doctor = await Doctor.findOne({ _id: doctorId });
     if (!doctor) {
