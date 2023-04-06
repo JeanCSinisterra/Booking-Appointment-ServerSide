@@ -201,13 +201,13 @@ router.post("/book-appointment", authMiddleware, async (req, res) => {
   try {
     // Convert date and time values to UTC moment objects
     console.log("Received Date:", req.body.date, "Received Time:", req.body.time);
-    const date = dayjs(req.body.date, "DD-MM-YYYY").toString()
-    const time = dayjs(req.body.time, "HH:mm").toString()
+    const date = dayjs(req.body.date, "DD-MM-YYYY");
+    const time = dayjs(req.body.time, "HH:mm");
     const dateTime = date.hour(time.hour()).minute(time.minute());
 
     // Store date and time values as separate fields
     req.body.status = "pending";
-    req.body.dateTime = dateTime;
+    req.body.dateTime = dateTime.format("DD-MM-YYYY HH:mm");
     
     // Create a new appointment and save it to the database
     const newAppointment = new Appointment(req.body);
@@ -240,11 +240,10 @@ router.post("/book-appointment", authMiddleware, async (req, res) => {
 // Route to check if appointment is available for selected doctor and time.
 router.post("/check-booking-availability", authMiddleware, async (req, res) => {
   try {
-    const date = dayjs(req.body.date).format("DD-MM-YYYY").toString();
-    const fromTime = dayjs(`${req.body.date}T$${req.body.time}`, "DD-MM-YYYY HH:mm").subtract(1, "hours").toString();
-    const toTime = dayjs(`${req.body.date}T$${req.body.time}`, "DD-MM-YYYY HH:mm").add(1, "hours").toString();
+    const date = dayjs(req.body.date, "DD-MM-YYYY");
+    const time = dayjs(req.body.time, "HH:mm");
     const doctorId = req.body.doctorId;
-    console.log("Processed date, fromTime, and toTime:", date, fromTime, toTime);
+    console.log("Processed date and time:", date.format("DD-MM-YYYY"), time.format("HH:mm"));
 
     const doctor = await Doctor.findOne({ _id: doctorId });
     if (!doctor) {
@@ -254,22 +253,45 @@ router.post("/check-booking-availability", authMiddleware, async (req, res) => {
       });
     }
 
-    const appointments = await Appointment.find({
-      doctorId,
-      dateTime: { $gte: fromTime, $lte: toTime },
-    });
+    // Check if the requested time is within the doctor's schedule
+    const requestStart = dayjs(`${req.body.date} ${req.body.time}`, "DD-MM-YYYY HH:mm");
+    const requestEnd = requestStart.add(1, "hour");
+    const workingStart = dayjs(`${req.body.date} ${doctor.fromTime}`, "DD-MM-YYYY HH:mm");
+    const workingEnd = dayjs(`${req.body.date} ${doctor.toTime}`, "DD-MM-YYYY HH:mm");
 
-    if (appointments.length > 0) {
+    if (requestStart.isBefore(workingStart) || requestEnd.isAfter(workingEnd)) {
       return res.status(200).send({
-        message: "Appointment is not available, please select a new time slot",
+        message: "Appointment is not available, please select a time within the doctor's working hours",
         success: false,
       });
-    } else {
-      res.status(200).send({
-        message: "Appointment is available",
-        success: true,
-      });
     }
+
+    // Fetch all appointments that match the selected doctor and date
+    const appointments = await Appointment.find({
+      doctorId,
+      date: date.format("DD-MM-YYYY"),
+    });
+
+    // Check for time slot availability
+    for (const appointment of appointments) {
+      const existingStartTime = dayjs(appointment.time, "HH:mm");
+      const existingEndTime = existingStartTime.add(1, "hour"); // Assuming appointments are 1 hour long
+
+      if (
+        (time.isSame(existingStartTime) || time.isBetween(existingStartTime, existingEndTime)) ||
+        (dateTime.isSame(existingStartTime) || dateTime.isBetween(existingStartTime, existingEndTime))
+      ) {
+        return res.status(200).send({
+          message: "Appointment is not available, please select a new time slot",
+          success: false,
+        });
+      }
+    }
+
+    res.status(200).send({
+      message: "Appointment is available",
+      success: true,
+    });
   } catch (error) {
     console.log(error);
     res
@@ -281,7 +303,6 @@ router.post("/check-booking-availability", authMiddleware, async (req, res) => {
       });
   }
 });
-
 
 // Route to get all the Appointments by user id
 router.get("/get-appointments-by-user-id", authMiddleware, async (req, res) => {
